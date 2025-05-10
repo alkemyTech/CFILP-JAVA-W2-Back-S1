@@ -22,17 +22,25 @@ public class AccountServiceImpl implements AccountService {
     public Account getAccountById(int id) {
         return accountRepository.findById(id).orElse(null);
     }
-    
     @Override
     public Account editAccount(int id, Account newAccountData) {
         return accountRepository.findById(id).map(account -> {
-            account.setCbu(newAccountData.getCbu());
-            account.setAlias(newAccountData.getAlias());
-            account.setCurrency(newAccountData.getCurrency());
-            account.setAccountType(newAccountData.getAccountType());
+            if (newAccountData.getCbu() != null) {
+                account.setCbu(newAccountData.getCbu());
+            }
+            if (newAccountData.getAlias() != null) {
+                account.setAlias(newAccountData.getAlias());
+            }
+            if (newAccountData.getCurrency() != null) {
+                account.setCurrency(newAccountData.getCurrency());
+            }
+            if (newAccountData.getAccountType() != null) {
+                account.setAccountType(newAccountData.getAccountType());
+            }
             return accountRepository.save(account);
         }).orElseThrow(() -> new RuntimeException("Cuenta no encontrada con id " + id));
     }
+
     
     @Override
     public void  deleteAccountById(int id) {
