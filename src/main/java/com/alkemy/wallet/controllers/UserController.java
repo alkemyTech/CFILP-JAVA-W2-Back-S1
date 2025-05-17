@@ -26,7 +26,7 @@ public class UserController {
 
     @Operation(summary = "Obtener todos los usuarios")
     @ApiResponse(responseCode = "200", description = "Lista de usuarios")
-    @GetMapping("/users")
+    @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers(); // Si no hay usuarios, se lanzará una excepción que será manejada por el GlobalExceptionHandler
         return ResponseEntity.ok(users); //si hay usuarios, se devuelve un 200 OK
@@ -35,7 +35,7 @@ public class UserController {
 
     @Operation(summary = "Obtener un usuario por ID")
     @ApiResponse(responseCode = "200", description = "Usuario encontrado")
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable int id) {
         User user = userService.getUserById(id); // Si el usuario no existe, se lanzará una excepción que será manejada por el GlobalExceptionHandler
         return ResponseEntity.ok(user); //si el usuario existe, se devuelve un 200 OK
@@ -43,7 +43,7 @@ public class UserController {
 
 @Operation(summary = "Crear nuevo usuario")
     @ApiResponse(responseCode = "201", description = "Usuario creado")
-    @PostMapping("/users")
+    @PostMapping
     public ResponseEntity<User> saveUser(@RequestBody User user) {
         User savedUser = userService.saveUser(user); //Si hay algún error de validación, lo manejará el GlobalExceptionHandler
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser); // Si todo va bien devuelve un 201 Created
