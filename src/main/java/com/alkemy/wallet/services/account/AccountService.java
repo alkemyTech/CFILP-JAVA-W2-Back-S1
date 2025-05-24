@@ -12,7 +12,7 @@ import com.alkemy.wallet.models.transaction.Transaction;
 
 public interface AccountService {
 
-    public Account createAccount(Account account);
+    public Account createAccount(AccountDTO account);
 
     public void deleteAccountById(int id);
 
@@ -20,7 +20,7 @@ public interface AccountService {
 
     public AccountDTO getAccountById(int id);
 
-    public List<Account> getAllAccountByUserId(int userId);
+    public List<AccountDTO> getAllAccountByUserId(int userId);
 
     public List<Transaction> getAccountTransactions(int accountId);
 

@@ -42,7 +42,7 @@ public interface UserMapper {
 
     // Mapea UserDTO -> User (incluye también el Person mapeado automáticamente)
     @Mapping(target = "userRoles", ignore = true)
-@Mapping(target = "accounts", ignore = true)
+    @Mapping(target = "accounts", ignore = true)
     User toEntity(UserDTO userDTO);
 
     // USER CREATE DTO

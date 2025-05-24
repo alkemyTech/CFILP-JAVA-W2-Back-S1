@@ -28,7 +28,7 @@ public class AccountController {
     @Operation(summary = "Crear nueva cuenta")
     @ApiResponse(responseCode = "201", description = "Cuenta creada")
     @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
+    public ResponseEntity<Account> createAccount(@RequestBody AccountDTO account) {
         Account created = accountService.createAccount(account);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -44,7 +44,6 @@ public class AccountController {
     @ApiResponse(responseCode = "200", description = "Cuenta encontrada")
     @GetMapping("/{id}")
     public ResponseEntity<AccountDTO> getAccountById(@PathVariable int id) {
-         System.out.println("llamada desde account controller");
         AccountDTO account = accountService.getAccountById(id);
         return ResponseEntity.ok(account);
     }
@@ -53,7 +52,7 @@ public class AccountController {
     @ApiResponse(responseCode = "200", description = "Lista de cuentas por usuario")
     @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Account>> getAccountsByUserId(@PathVariable int userId) {
+    public ResponseEntity<List<AccountDTO>> getAccountsByUserId(@PathVariable int userId) {
         return ResponseEntity.ok(accountService.getAllAccountByUserId(userId));
     }
 

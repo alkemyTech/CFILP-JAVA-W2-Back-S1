@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AccountServiceImpl implements AccountService {
 
-    
     @Autowired
     private AccountRepository accountRepository;
     @Autowired
@@ -44,10 +43,9 @@ public class AccountServiceImpl implements AccountService {
     public AccountDTO getAccountById(int id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cuenta no encontrada con id " + id));
-           
-           System.out.println("Account: " + account);
-                return accountMapper.toDTO(account);
-        }
+
+        return accountMapper.toDTO(account);
+    }
 
     @Override
     public Account editAccount(int id, Account newAccountData) {
@@ -69,20 +67,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<Account> getAllAccountByUserId(int userId) {
+    public List<AccountDTO> getAllAccountByUserId(int userId) {
         try {
             List<Account> accounts = accountRepository.findByUserId(userId);
             if (accounts.isEmpty()) {
                 throw new RuntimeException("No se encontraron cuentas para el usuario con ID " + userId);
             }
-            return accounts;
+            List<AccountDTO> accountDTOs = accountMapper.toDTOList(accounts);
+       
+            return accountDTOs;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
-    public void  deleteAccountById(int id) {
+    public void deleteAccountById(int id) {
         if (!accountRepository.existsById(id)) {
             throw new RuntimeException("No se puede eliminar. Cuenta no encontrada con id " + id);
         }
@@ -96,25 +96,33 @@ public class AccountServiceImpl implements AccountService {
             throw new RuntimeException("No se encontraron cuentas");
         }
         return accounts;
-        
+
     }
 
     @Override
-    public Account createAccount(Account account) {
-        int userId = account.getUser().getId();
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID " + userId));
+    public Account createAccount(AccountDTO accountDTO) {
 
-        int accountTypeId = account.getAccountType().getId();
-        AccountType accountType = accountTypeRepository.findById(accountTypeId)
-            .orElseThrow(() -> new RuntimeException("Tipo de cuenta no encontrada con ID " + accountTypeId));
-        account.setUser(user);
-        account.setAccountType(accountType);
+        int userId = accountDTO.getUserId();
+        // Verificar si el usuario existe por el ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID " + userId));
+
+        //Obtenemos el nombre del tipo de cuenta desde el DTO
+        String accountTypeName = accountDTO.getAccountType();
+
+        // Verificar si el tipo de cuenta existe por el nombre
+        AccountType accountType = accountTypeRepository.findByAccountType(accountTypeName);
+        if (accountType == null) {
+            throw new RuntimeException("Tipo de cuenta no encontrada con el nombre " + accountTypeName);
+        }
+        
+        //Mapea el DTO a la entidad
+        Account account = accountMapper.toEntity(accountDTO);
+        account.setUser(user); // Asignar el usuario a la cuenta
+        account.setAccountType(accountType); // Asignar el tipo de cuenta a la cuenta
         account.setBalance(0);
         return accountRepository.save(account);
     }
-
-
 
     @Override
     public List<Transaction> getAccountTransactions(int accountId) {
